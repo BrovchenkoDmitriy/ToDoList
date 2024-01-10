@@ -4,11 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="16dp"
     tools:context=".presantation.toDoList.ToDoListFragment">
 
     <CalendarView
         android:id="@+id/calendarView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:datePickerMode="calendar"
         android:theme="@style/CalenderViewCustom"
@@ -34,4 +35,16 @@
         app:layout_constraintEnd_toEndOf="@+id/timestamp_start"
         app:layout_constraintStart_toStartOf="@+id/timestamp_start"
         app:layout_constraintTop_toBottomOf="@+id/timestamp_start" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/add_new_task_floating_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="12dp"
+        android:clickable="true"
+        android:contentDescription="@string/add_new_task"
+        android:src="@android:drawable/ic_input_add"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
