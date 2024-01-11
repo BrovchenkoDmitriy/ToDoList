@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.fragment.app.FragmentContainerView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.fragment.app.FragmentContainerView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:name="com.example.todolist.presantation.toDoList.ToDoListFragment"
     android:id="@+id/to_do_list_container"
+    android:name="androidx.navigation.fragment.NavHostFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presantation.MainActivity"
-    tools:layout="@layout/fragment_to_do_list"
-    />
+    app:defaultNavHost="true"
+    app:navGraph="@navigation/navigation"
+    tools:context=".presantation.MainActivity" />

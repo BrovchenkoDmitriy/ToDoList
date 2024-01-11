@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import com.example.todolist.R
 import com.example.todolist.databinding.FragmentToDoListBinding
 import java.util.Calendar
 import java.util.Locale
@@ -53,14 +55,20 @@ class ToDoListFragment : Fragment() {
             calendarView.setDate(calendar.timeInMillis, true, true)
             setText(calendar)
         }
+        binding.addNewTaskFloatingButton.setOnClickListener {
+            findNavController().navigate(R.id.action_toDoListFragment_to_taskItemFragment)
+        }
     }
-    private fun setText(calendar: Calendar){
+
+    private fun setText(calendar: Calendar) {
         val timestamp = (calendar.timeInMillis / 10000) * 10000
         calendar.set(calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
             calendar.get(Calendar.DAY_OF_MONTH),
             23,
-            59,59)
+            59,
+            59
+        )
         val timestampEndOFDay = (calendar.timeInMillis / 10000) * 10000
         val resultStartOfDay = format.format(timestamp) + " ($timestamp)"
         val resultEndOfDay = format.format(timestampEndOFDay) + " ($timestampEndOFDay)"
