@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.todolist.databinding.DateTimePickerBottomsheetDialogBinding
 import com.example.todolist.databinding.FragmentTaskItemBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import java.util.Calendar
 
 class TaskItemFragment : Fragment() {
 
@@ -18,10 +17,6 @@ class TaskItemFragment : Fragment() {
     private var _binding: FragmentTaskItemBinding? = null
     private val binding: FragmentTaskItemBinding
         get() = _binding ?: throw RuntimeException("FragmentTaskItemBinding is null")
-
-//    private var _bindingBottomSheetDialog: DateTimePickerBottomsheetDialogBinding?=null
-//    private val bindingBottomSheetDialog: DateTimePickerBottomsheetDialogBinding
-//        get() = _bindingBottomSheetDialog?: throw  RuntimeException("DateTimePickerBottomsheetDialogBinding is null")
 
     private val viewModel by lazy {
         ViewModelProvider(
@@ -44,23 +39,30 @@ class TaskItemFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-//        _bindingBottomSheetDialog = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupDateTimePickerBottomSheetDialog()
-        binding.button3.setOnClickListener {
+        binding.tvStartTaskTime.setOnClickListener {
             dateTimePickerBottomsheetDialog.show()
         }
+        binding.tvEndTaskTime.setOnClickListener {
+            dateTimePickerBottomsheetDialog.show()
+        }
+        binding.etTaskDescription.setHorizontallyScrolling(false)
+        binding.etTaskDescription.maxLines = 5
+        binding.etTaskDescription.autoSizeMaxTextSize
     }
-    private fun setupDateTimePickerBottomSheetDialog(){
+
+    private fun setupDateTimePickerBottomSheetDialog() {
 
         val dialogView = DateTimePickerBottomsheetDialogBinding.inflate(layoutInflater)
         dialogView.timePicker.setIs24HourView(true)
         dateTimePickerBottomsheetDialog = BottomSheetDialog(requireContext())
         dateTimePickerBottomsheetDialog.setContentView(dialogView.root)
-        dateTimePickerBottomsheetDialog.behavior.maxHeight =resources.displayMetrics.heightPixels/2
+        dateTimePickerBottomsheetDialog.behavior.maxHeight =
+            resources.displayMetrics.heightPixels / 2
         dialogView.cancelButton.setOnClickListener { dateTimePickerBottomsheetDialog.hide() }
         dialogView.acceptButton.setOnClickListener { dateTimePickerBottomsheetDialog.hide() }
     }

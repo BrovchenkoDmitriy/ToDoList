@@ -5,4 +5,9 @@
     <string name="add_new_task">add_new_task</string>
     <string name="cancelButtonText">Отмена</string>
     <string name="acceptButtonText">ОК</string>
+    <string name="task_description">Краткое описание</string>
+    <string name="task_name">Наименование</string>
+    <string name="tv_start_task_text">Начало</string>
+    <string name="tv_end_task_text">Окончание</string>
+    <string name="tv_fragment_task_item_title">Карточка создания/редактирования дела</string>
 </resources>
