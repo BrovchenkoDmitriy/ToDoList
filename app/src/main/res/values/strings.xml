@@ -10,4 +10,5 @@
     <string name="tv_start_task_text">Начало</string>
     <string name="tv_end_task_text">Окончание</string>
     <string name="tv_fragment_task_item_title">Карточка создания/редактирования дела</string>
+    <string name="title_todo_list_fragment">ToDoList</string>
 </resources>

@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/toDoListFragment"
         android:name="com.example.todolist.presantation.toDoList.ToDoListFragment"
-        android:label="fragment_to_do_list"
+        android:label="@string/title_todo_list_fragment"
         tools:layout="@layout/fragment_to_do_list" >
         <action
             android:id="@+id/action_toDoListFragment_to_taskItemFragment"
@@ -18,5 +18,14 @@
         android:id="@+id/taskItemFragment"
         android:name="com.example.todolist.presantation.taskItem.TaskItemFragment"
         android:label="fragment_task_item"
-        tools:layout="@layout/fragment_task_item" />
+        tools:layout="@layout/fragment_task_item" >
+        <argument
+            android:name="extra_mode"
+            app:argType="string"
+            android:defaultValue="add_mode" />
+        <argument
+            android:name="task_item_id"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </fragment>
 </navigation>

@@ -74,7 +74,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/tv_start_task"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tv_start_task"
-            android:text="пт, 10 января, 2024 11:00  >" />
+            android:text="пт, 10 января 2024, 11:00  >" />
 
         <TextView
             android:id="@+id/tv_end_task_time"
@@ -84,7 +84,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/tv_end_task"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tv_end_task"
-            android:text="пт, 10 января, 2024 11:00  >" />
+            android:text="пт, 10 января 2024, 11:00  >" />
 
 
         <com.google.android.material.textfield.TextInputLayout
