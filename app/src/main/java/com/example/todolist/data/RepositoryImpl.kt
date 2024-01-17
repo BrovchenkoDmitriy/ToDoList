@@ -1,8 +1,6 @@
 package com.example.todolist.data
 
 import android.app.Application
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import com.example.todolist.data.mappers.TaskItemMapper
 import com.example.todolist.domain.Repository
 import com.example.todolist.domain.TaskItem
@@ -27,12 +25,8 @@ class RepositoryImpl(application: Application) : Repository {
         taskItemDao.addTaskItem(taskItemMapper.mapEntityToDbModel(taskItem))
     }
 
-    override fun getTaskItemList(dateStart: Long, dateFinish: Long): LiveData<List<TaskItem>> {
+    override suspend fun getTaskItemList(dateStart: Long, dateFinish: Long): List<TaskItem> {
         val taskItemDbModelList = taskItemDao.getTaskItemList(dateStart, dateFinish)
-        return MediatorLiveData<List<TaskItem>>().apply {
-            addSource(taskItemDbModelList) {
-                value = taskItemMapper.mapDbModelListToEntityList(it)
-            }
-        }
+        return taskItemMapper.mapDbModelListToEntityList(taskItemDbModelList)
     }
 }
