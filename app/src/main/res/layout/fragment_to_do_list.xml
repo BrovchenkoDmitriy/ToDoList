@@ -12,6 +12,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <CalendarView
             android:id="@+id/calendarView"
             android:layout_width="match_parent"
@@ -44,12 +45,41 @@
             android:id="@+id/rv_task_item_list"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:visibility="gone"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/timestamp_end"
-            tools:listitem="@layout/task_item"></androidx.recyclerview.widget.RecyclerView>
+            tools:listitem="@layout/task_item" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/timestamp_end">
+
+            <HorizontalScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/container_for_daily_calendar"
+                >
+
+                <com.example.todolist.presantation.toDoList.CustomDailyCalendarViewGroup
+                    android:id="@+id/daily_calendar_view_group"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:eachRowHeight="20dp"
+                    app:minimumPercentage="0.25"
+                    app:numberOfRows="24">
+                </com.example.todolist.presantation.toDoList.CustomDailyCalendarViewGroup>
+            </HorizontalScrollView>
+        </ScrollView>
+
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/add_new_task_floating_button"
