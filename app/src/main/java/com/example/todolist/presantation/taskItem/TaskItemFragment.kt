@@ -1,13 +1,17 @@
 package com.example.todolist.presantation.taskItem
 
+import android.content.Context
 import android.icu.text.SimpleDateFormat
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
+import com.example.todolist.R
 import com.example.todolist.databinding.DateTimePickerBottomsheetDialogBinding
 import com.example.todolist.databinding.FragmentTaskItemBinding
 import com.example.todolist.domain.TaskItem
@@ -18,7 +22,10 @@ import kotlin.properties.Delegates
 
 class TaskItemFragment : Fragment() {
 
-    private lateinit var dateTimePickerBottomsheetDialog: BottomSheetDialog
+    private lateinit var dateTimePickerBottomSheetDialog: BottomSheetDialog
+    private lateinit var dialogView: DateTimePickerBottomsheetDialogBinding
+
+    private lateinit var onEditingIsFinishedListener: OnEditingIsFinishedListener
 
     private var start by Delegates.notNull<Long>()
     private var finish by Delegates.notNull<Long>()
@@ -39,6 +46,13 @@ class TaskItemFragment : Fragment() {
     }
     private val args: TaskItemFragmentArgs by navArgs()
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnEditingIsFinishedListener) {
+            onEditingIsFinishedListener = context
+        } else throw RuntimeException("Activity must implement OnEditingIsFinishedListener")
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         parseParams()
@@ -49,44 +63,62 @@ class TaskItemFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentTaskItemBinding.inflate(layoutInflater, container, false)
+        dialogView = DateTimePickerBottomsheetDialogBinding.inflate(layoutInflater)
         return binding.root
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onDestroy() {
+        super.onDestroy()
         _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupObservers()
+        chooseRightMode()
+        setupDateTimePickerBottomSheetDialog()
+        setupClickListeners()
+        applyEditTextDescriptionSettings()
+        taskNameTextListener()
+    }
+
+    private fun setupClickListeners() {
+        binding.tvStartTaskTime.setOnClickListener {
+            dateTimePickerBottomSheetDialog.show()
+            viewModel.setStartOrFinishTimeMode(START_TIME_MODE)
+        }
+        binding.tvEndTaskTime.setOnClickListener {
+            dateTimePickerBottomSheetDialog.show()
+            viewModel.setStartOrFinishTimeMode(FINISH_TIME_MODE)
+        }
+        binding.cancelButton.setOnClickListener {
+            viewModel.finish()
+        }
+    }
+
+    private fun setupObservers() {
         viewModel.startTime.observe(viewLifecycleOwner) {
             start = it
         }
         viewModel.finishTime.observe(viewLifecycleOwner) {
             finish = it
         }
-        chooseRightMode()
-        setupDateTimePickerBottomSheetDialog()
-        binding.tvStartTaskTime.setOnClickListener {
-            dateTimePickerBottomsheetDialog.show()
-            viewModel.setStartOrFinishTimeMode(START_TIME_MODE)
+        viewModel.closeTaskItemScreen.observe(viewLifecycleOwner) {
+            onEditingIsFinishedListener.onEditingIsFinishedListener()
         }
-        binding.tvEndTaskTime.setOnClickListener {
-            dateTimePickerBottomsheetDialog.show()
-            viewModel.setStartOrFinishTimeMode(FINISH_TIME_MODE)
-        }
+    }
+
+    private fun applyEditTextDescriptionSettings() {
         binding.etTaskDescription.setHorizontallyScrolling(false)
         binding.etTaskDescription.maxLines = FIVE_LINES
         binding.etTaskDescription.autoSizeMaxTextSize
     }
 
     private fun setupDateTimePickerBottomSheetDialog() {
-
-        val dialogView = DateTimePickerBottomsheetDialogBinding.inflate(layoutInflater)
         dialogView.timePicker.setIs24HourView(true)
-        dateTimePickerBottomsheetDialog = BottomSheetDialog(requireContext())
-        dateTimePickerBottomsheetDialog.setContentView(dialogView.root)
-        dateTimePickerBottomsheetDialog.behavior.maxHeight =
+        dateTimePickerBottomSheetDialog = BottomSheetDialog(requireContext())
+        dateTimePickerBottomSheetDialog.setContentView(dialogView.root)
+        dateTimePickerBottomSheetDialog.behavior.maxHeight =
             resources.displayMetrics.heightPixels / 2
 
         viewModel.startOrFinishTimeSetup.observe(viewLifecycleOwner) {
@@ -107,43 +139,40 @@ class TaskItemFragment : Fragment() {
             }
 
             if (timeMode == DATE_START) {
-                calendar.timeInMillis = start
-                dialogView.datePicker.updateDate(
-                    calendar.get(Calendar.YEAR),
-                    calendar.get(Calendar.MONTH),
-                    calendar.get(Calendar.DAY_OF_MONTH)
-                )
-                dialogView.timePicker.hour = calendar.get(Calendar.HOUR_OF_DAY)
-                dialogView.timePicker.minute = calendar.get(Calendar.MINUTE)
+                setDateToPickers(calendar, start)
                 dialogView.acceptButton.setOnClickListener {
                     viewModel.setStartTime(calendar.timeInMillis)
                     viewModel.setFinishTime(calendar.timeInMillis + HOUR_IN_MILLIS)
                     binding.tvStartTaskTime.text = format.format(start)
                     binding.tvEndTaskTime.text = format.format(finish)
-                    dateTimePickerBottomsheetDialog.hide()
+                    dateTimePickerBottomSheetDialog.hide()
                 }
             } else {
-                calendar.timeInMillis = finish
-                dialogView.datePicker.updateDate(
-                    calendar.get(Calendar.YEAR),
-                    calendar.get(Calendar.MONTH),
-                    calendar.get(Calendar.DAY_OF_MONTH)
-                )
-                dialogView.timePicker.hour = calendar.get(Calendar.HOUR_OF_DAY)
-                dialogView.timePicker.minute = calendar.get(Calendar.MINUTE)
+                setDateToPickers(calendar, finish)
                 dialogView.acceptButton.setOnClickListener {
                     if (calendar.timeInMillis > start)
                         viewModel.setFinishTime(calendar.timeInMillis)
                     else viewModel.setFinishTime(start)
                     binding.tvStartTaskTime.text = format.format(start)
                     binding.tvEndTaskTime.text = format.format(finish)
-                    dateTimePickerBottomsheetDialog.hide()
+                    dateTimePickerBottomSheetDialog.hide()
                 }
             }
             dialogView.cancelButton.setOnClickListener {
-                dateTimePickerBottomsheetDialog.hide()
+                dateTimePickerBottomSheetDialog.hide()
             }
         }
+    }
+
+    private fun setDateToPickers(calendar: Calendar, time: Long) {
+        calendar.timeInMillis = time
+        dialogView.datePicker.updateDate(
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+        dialogView.timePicker.hour = calendar.get(Calendar.HOUR_OF_DAY)
+        dialogView.timePicker.minute = calendar.get(Calendar.MINUTE)
     }
 
     private fun chooseRightMode() {
@@ -188,6 +217,9 @@ class TaskItemFragment : Fragment() {
         binding.tvStartTaskTime.text = format.format(dateStart)
         binding.tvEndTaskTime.text = format.format(dateFinish)
         binding.confirmButton.setOnClickListener {
+            if (binding.etTaskName.text.isNullOrEmpty()) {
+                binding.tilTaskName.error = getString(R.string.error_input_name)
+            }
             val name = binding.etTaskName.text?.toString() ?: ""
             val description = binding.etTaskDescription.text?.toString() ?: ""
             viewModel.addTaskItem(
@@ -209,6 +241,22 @@ class TaskItemFragment : Fragment() {
         if (screenMode == MODE_EDIT) {
             taskItemId = args.taskItemId
         }
+    }
+
+    private fun taskNameTextListener() {
+
+        binding.etTaskName.setOnFocusChangeListener { view, b ->
+            if (!b && (view as EditText).text.isEmpty()) {
+                binding.tilTaskName.error = getString(R.string.error_input_name)
+            }
+        }
+        binding.etTaskName.addTextChangedListener {
+            binding.tilTaskName.isErrorEnabled = false
+        }
+    }
+
+    interface OnEditingIsFinishedListener {
+        fun onEditingIsFinishedListener()
     }
 
     companion object {
