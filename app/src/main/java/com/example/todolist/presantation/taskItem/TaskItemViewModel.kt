@@ -26,10 +26,6 @@ class TaskItemViewModel(application: Application) : AndroidViewModel(application
     private val  _finishTime = MutableLiveData<Long>()
     val finishTime: LiveData<Long> = _finishTime
 
-    private val _errorInputName = MutableLiveData<Boolean>()
-    val errorInputName: LiveData<Boolean>
-        get() = _errorInputName
-
     private val _taskItem = MutableLiveData<TaskItem>()
     val taskItem: LiveData<TaskItem>
         get() = _taskItem
@@ -85,18 +81,13 @@ class TaskItemViewModel(application: Application) : AndroidViewModel(application
     private fun validateInput(name: String): Boolean {
         var result = true
         if (name.isBlank()) {
-            _errorInputName.value = true
             result = false
         }
         return result
     }
 
-    private fun finish() {
+    fun finish() {
         _closeTaskItemScreen.value = Unit
-    }
-
-    fun resetInputNameError() {
-        _errorInputName.value = false
     }
 
     fun setStartOrFinishTimeMode(value: Int){

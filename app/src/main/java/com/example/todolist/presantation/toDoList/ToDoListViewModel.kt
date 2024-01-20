@@ -1,7 +1,6 @@
 package com.example.todolist.presantation.toDoList
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -24,8 +23,6 @@ class ToDoListViewModel(application: Application) : AndroidViewModel(application
     fun getTaskItemList(timeStart: Long, timeFinish: Long) {
         viewModelScope.launch {
             val a = getTaskItemListUseCase.getTaskItemList(timeStart, timeFinish)
-            Log.d("TAGIL", "start:$timeStart  finish:$timeFinish")
-            Log.d("TAGIL", "result: $a")
             _taskItemList.value = a
         }
     }

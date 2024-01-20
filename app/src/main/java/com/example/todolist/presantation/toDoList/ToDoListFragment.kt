@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.todolist.R
 import com.example.todolist.databinding.FragmentToDoListBinding
-import com.example.todolist.presantation.toDoList.taskItemListRecycler.TaskListAdapter
 import java.util.Calendar
 import java.util.Locale
 
@@ -19,10 +18,6 @@ import java.util.Locale
 class ToDoListFragment : Fragment() {
 
     private val format = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
-
-    private lateinit var taskListAdapter: TaskListAdapter
-
-
     private var _binding: FragmentToDoListBinding? = null
     private val binding: FragmentToDoListBinding
         get() = _binding ?: throw RuntimeException("FragmentToDoListBinding is null")
@@ -33,10 +28,6 @@ class ToDoListFragment : Fragment() {
         )[ToDoListViewModel::class.java]
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -45,21 +36,22 @@ class ToDoListFragment : Fragment() {
         return binding.root
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onDestroy() {
+        super.onDestroy()
         _binding = null
+
     }
+
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val calendar = Calendar.getInstance()
-        setupRecyclerView()
         binding.calendarView.date = calendar.timeInMillis
-        setText(calendar)
-        binding.calendarView.setOnDateChangeListener { calendarView, year, month, dayOfMonth ->
-            calendar.set(year, month, dayOfMonth, 0, 0)
-            calendarView.setDate(calendar.timeInMillis, true, true)
-            setText(calendar)
+        initDailyTaskItemList(calendar)
+        binding.calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
+            calendar.set(year, month, dayOfMonth)
+            initDailyTaskItemList(calendar)
         }
         binding.addNewTaskFloatingButton.setOnClickListener {
             findNavController().navigate(
@@ -69,51 +61,13 @@ class ToDoListFragment : Fragment() {
 
     }
 
-    private fun setupRecyclerView() {
-        with(binding.rvTaskItemList) {
-            taskListAdapter = TaskListAdapter()
-            adapter = taskListAdapter
-            //устанавливаем максимальный пул для разных TypeView
-        }
-//        setupLongClickListener()
-        setupClickListener()
-//        setupSwipeListener(binding.rvTaskItemList)
-    }
-
-    private fun setupClickListener() {
-        taskListAdapter.onTaskItemClickListener = {
-            findNavController().navigate(
-                ToDoListFragmentDirections.actionToDoListFragmentToTaskItemFragment(
-                    MODE_EDIT, it.id
-                )
-            )
-        }
-    }
-
-    private fun setText(calendar: Calendar) {
-        calendar.set(
-            calendar.get(Calendar.YEAR),
-            calendar.get(Calendar.MONTH),
-            calendar.get(Calendar.DAY_OF_MONTH),
-            0,
-            0,
-            0
-        )
-        val timestampStartOFDay = (calendar.timeInMillis / 10000) * 10000
-
-        calendar.set(
-            calendar.get(Calendar.YEAR),
-            calendar.get(Calendar.MONTH),
-            calendar.get(Calendar.DAY_OF_MONTH),
-            23,
-            59,
-            59
-        )
-        val timestampEndOFDay = (calendar.timeInMillis / 10000) * 10000
+    private fun initDailyTaskItemList(calendar: Calendar) {
+        val timestampStartOFDay = getTimestamp(calendar, 0, 0, 0)
+        val timestampEndOFDay = getTimestamp(calendar, 23, 59, 59)
         viewModel.getTaskItemList(timestampStartOFDay, timestampEndOFDay)
 
+        binding.timestampStart.text = format.format(timestampStartOFDay)
         viewModel.taskItemList.observe(viewLifecycleOwner) { taskItemList ->
-            taskListAdapter.submitList(taskItemList)
             val countOfPlannedText =
                 "${getString(R.string.CountOfPlannedTask)} ${taskItemList.size}"
             binding.timestampEnd.text = countOfPlannedText
@@ -133,9 +87,18 @@ class ToDoListFragment : Fragment() {
                 }
             }
         }
-        val resultStartOfDay = format.format(timestampStartOFDay)
-        binding.timestampStart.text = resultStartOfDay
+    }
 
+    private fun getTimestamp(calendar: Calendar, hour: Int, minute: Int, second: Int): Long {
+        calendar.set(
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH),
+            hour,
+            minute,
+            second
+        )
+        return (calendar.timeInMillis / 10000) * 10000
     }
 
     companion object {
