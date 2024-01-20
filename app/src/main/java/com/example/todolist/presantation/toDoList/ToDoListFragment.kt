@@ -2,13 +2,14 @@ package com.example.todolist.presantation.toDoList
 
 import android.icu.text.SimpleDateFormat
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.example.todolist.R
 import com.example.todolist.databinding.FragmentToDoListBinding
 import com.example.todolist.presantation.toDoList.taskItemListRecycler.TaskListAdapter
 import java.util.Calendar
@@ -17,7 +18,7 @@ import java.util.Locale
 
 class ToDoListFragment : Fragment() {
 
-    private val format = SimpleDateFormat("yyyy, dd MMMM HH:mm", Locale.getDefault())
+    private val format = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
 
     private lateinit var taskListAdapter: TaskListAdapter
 
@@ -44,8 +45,8 @@ class ToDoListFragment : Fragment() {
         return binding.root
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 
@@ -109,16 +110,32 @@ class ToDoListFragment : Fragment() {
             59
         )
         val timestampEndOFDay = (calendar.timeInMillis / 10000) * 10000
-        Log.d("TAGIL", "query to database")
-        Log.d("TAGIL", "start:$timestampStartOFDay  finish:$timestampEndOFDay")
         viewModel.getTaskItemList(timestampStartOFDay, timestampEndOFDay)
-        viewModel.taskItemList.observe(viewLifecycleOwner) {
-            taskListAdapter.submitList(it)
+
+        viewModel.taskItemList.observe(viewLifecycleOwner) { taskItemList ->
+            taskListAdapter.submitList(taskItemList)
+            val countOfPlannedText =
+                "${getString(R.string.CountOfPlannedTask)} ${taskItemList.size}"
+            binding.timestampEnd.text = countOfPlannedText
+            binding.dailyCalendarViewGroup.removeAllViews()
+            for (item in taskItemList) {
+                binding.dailyCalendarViewGroup.addTask(item)
+            }
+            for (view in binding.dailyCalendarViewGroup.children) {
+                view.setOnClickListener {
+                    if (it is TaskView) {
+                        findNavController().navigate(
+                            ToDoListFragmentDirections.actionToDoListFragmentToTaskItemFragment(
+                                MODE_EDIT, it.taskItemId
+                            )
+                        )
+                    }
+                }
+            }
         }
-        val resultStartOfDay = format.format(timestampStartOFDay) + " ($timestampStartOFDay)"
-        val resultEndOfDay = format.format(timestampEndOFDay) + " ($timestampEndOFDay)"
+        val resultStartOfDay = format.format(timestampStartOFDay)
         binding.timestampStart.text = resultStartOfDay
-        binding.timestampEnd.text = resultEndOfDay
+
     }
 
     companion object {

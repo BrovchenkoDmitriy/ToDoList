@@ -11,4 +11,6 @@
     <string name="tv_end_task_text">Окончание</string>
     <string name="tv_fragment_task_item_title">Карточка создания/редактирования дела</string>
     <string name="title_todo_list_fragment">ToDoList</string>
+    <string name="CountOfPlannedTask">Количество запланированных дел:</string>
+    <string name="container_for_daily_calendar">Container for DailyCalendar</string>
 </resources>
