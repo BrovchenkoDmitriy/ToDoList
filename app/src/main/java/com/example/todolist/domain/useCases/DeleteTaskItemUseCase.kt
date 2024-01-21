@@ -1,5 +1,6 @@
-package com.example.todolist.domain
+package com.example.todolist.domain.useCases
 
+import com.example.todolist.domain.Repository
 import javax.inject.Inject
 
 class DeleteTaskItemUseCase @Inject constructor(private val repository: Repository) {

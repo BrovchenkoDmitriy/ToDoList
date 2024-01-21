@@ -1,4 +1,4 @@
-package com.example.todolist.presantation.toDoList.customDailyCalendarViewGroup
+package com.example.todolist.presantation.toDoListFragment.customDailyCalendarViewGroup
 
 import android.content.Context
 import android.graphics.Canvas

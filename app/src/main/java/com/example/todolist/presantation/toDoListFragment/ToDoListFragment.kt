@@ -1,4 +1,4 @@
-package com.example.todolist.presantation.toDoList
+package com.example.todolist.presantation.toDoListFragment
 
 import android.icu.text.SimpleDateFormat
 import android.os.Bundle
@@ -14,7 +14,7 @@ import com.example.todolist.R
 import com.example.todolist.ToDoListApp
 import com.example.todolist.databinding.FragmentToDoListBinding
 import com.example.todolist.presantation.ViewModelFactory
-import com.example.todolist.presantation.toDoList.customDailyCalendarViewGroup.TaskView
+import com.example.todolist.presantation.toDoListFragment.customDailyCalendarViewGroup.TaskView
 import java.util.Calendar
 import java.util.Locale
 import javax.inject.Inject

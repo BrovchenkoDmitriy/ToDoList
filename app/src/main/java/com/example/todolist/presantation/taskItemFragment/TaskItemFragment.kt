@@ -1,4 +1,4 @@
-package com.example.todolist.presantation.taskItem
+package com.example.todolist.presantation.taskItemFragment
 
 import android.content.Context
 import android.icu.text.SimpleDateFormat

@@ -1,8 +1,8 @@
 package com.example.todolist.di
 
 import android.app.Application
-import com.example.todolist.presantation.taskItem.TaskItemFragment
-import com.example.todolist.presantation.toDoList.ToDoListFragment
+import com.example.todolist.presantation.taskItemFragment.TaskItemFragment
+import com.example.todolist.presantation.toDoListFragment.ToDoListFragment
 import dagger.BindsInstance
 import dagger.Component
 
