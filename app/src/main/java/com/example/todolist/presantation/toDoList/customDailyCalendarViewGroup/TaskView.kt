@@ -29,8 +29,8 @@ class TaskView @JvmOverloads constructor(
     private var endTime = 0f
     private var marginBetweenItems: Int =  16
     var taskItemId: Int = 0
-    private var textToDraw = ""
-    private var textToDrawTime = ""
+     var taskName = ""
+     var taskTimeStart = ""
     private val textBounds = Rect()
 
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -45,26 +45,26 @@ class TaskView @JvmOverloads constructor(
         this.startTime = calendar.get(Calendar.HOUR_OF_DAY).toFloat() + calendar.get(Calendar.MINUTE).toFloat()/60
         calendar.timeInMillis = taskItem.dateFinish
         this.endTime = calendar.get(Calendar.HOUR_OF_DAY).toFloat() + calendar.get(Calendar.MINUTE).toFloat()/60
-        this.textToDraw = taskItem.name
-        this.textToDrawTime = format.format(taskItem.dateStart)
+        this.taskName = taskItem.name
+        this.taskTimeStart = format.format(taskItem.dateStart)
     }
 
     init {
         setPadding(marginBetweenItems, marginBetweenItems, marginBetweenItems, marginBetweenItems)
         context.withStyledAttributes(attrs, R.styleable.TaskView) {
-            textToDraw = this.getString(R.styleable.TaskView_taskName)?:""
-            textToDrawTime = this.getString(R.styleable.TaskView_taskDateStart)?:""
+            taskName = this.getString(R.styleable.TaskView_taskName)?:""
+            taskTimeStart = this.getString(R.styleable.TaskView_taskDateStart)?:""
             startTime = this.getFloat(R.styleable.TaskView_startTime, 0f)
             endTime = this.getFloat(R.styleable.TaskView_endTime, 0f)
         }
     }
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        val title = textToDraw.length
-        val time = textToDrawTime.length
+        val title = taskName.length
+        val time = taskTimeStart.length
         if (title >= time) {
-            textPaint.getTextBounds(textToDraw, 0, textToDraw.length, textBounds)
+            textPaint.getTextBounds(taskName, 0, taskName.length, textBounds)
         } else
-            textPaint.getTextBounds(textToDrawTime, 0, textToDrawTime.length, textBounds)
+            textPaint.getTextBounds(taskTimeStart, 0, taskTimeStart.length, textBounds)
 
         val textWidth = textBounds.width()
 
@@ -86,13 +86,13 @@ class TaskView @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas) {
         canvas.drawText(
-            textToDraw,
+            taskName,
             paddingLeft.toFloat(),
             textBounds.height().toFloat() + paddingTop,
             textPaint
         )
         canvas.drawText(
-            textToDrawTime,
+            taskTimeStart,
             paddingLeft.toFloat(),
             textBounds.height().toFloat() * 2 + 20,
             textPaint

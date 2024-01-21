@@ -12,15 +12,31 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.example.todolist.R
+import com.example.todolist.ToDoListApp
 import com.example.todolist.databinding.DateTimePickerBottomsheetDialogBinding
 import com.example.todolist.databinding.FragmentTaskItemBinding
 import com.example.todolist.domain.TaskItem
+import com.example.todolist.presantation.ViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import java.util.Calendar
 import java.util.Locale
+import javax.inject.Inject
 import kotlin.properties.Delegates
 
 class TaskItemFragment : Fragment() {
+
+    private val component by lazy {
+        (requireActivity().application as ToDoListApp).component
+    }
+
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+    private val viewModel by lazy {
+        ViewModelProvider(
+            this, viewModelFactory
+        )[TaskItemViewModel::class.java]
+    }
 
     private lateinit var dateTimePickerBottomSheetDialog: BottomSheetDialog
     private lateinit var dialogView: DateTimePickerBottomsheetDialogBinding
@@ -39,11 +55,7 @@ class TaskItemFragment : Fragment() {
     private val binding: FragmentTaskItemBinding
         get() = _binding ?: throw RuntimeException("FragmentTaskItemBinding is null")
 
-    private val viewModel by lazy {
-        ViewModelProvider(
-            this,
-        )[TaskItemViewModel::class.java]
-    }
+
     private val args: TaskItemFragmentArgs by navArgs()
 
     override fun onAttach(context: Context) {
@@ -54,6 +66,7 @@ class TaskItemFragment : Fragment() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        component.inject(this)
         super.onCreate(savedInstanceState)
         parseParams()
     }
