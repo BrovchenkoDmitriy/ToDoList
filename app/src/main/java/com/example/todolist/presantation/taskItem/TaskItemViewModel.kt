@@ -1,29 +1,29 @@
 package com.example.todolist.presantation.taskItem
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.todolist.data.RepositoryImpl
 import com.example.todolist.domain.AddTaskItemUseCase
 import com.example.todolist.domain.GetTaskItemUseCase
 import com.example.todolist.domain.TaskItem
 import com.example.todolist.domain.UpgradeTaskItemUseCase
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class TaskItemViewModel(application: Application) : AndroidViewModel(application) {
-    private val repository = RepositoryImpl(application)
-    private val upgradeTaskItemUseCase = UpgradeTaskItemUseCase(repository)
-    private val addTaskItemUseCase = AddTaskItemUseCase(repository)
-    private val getTaskItemUseCase = GetTaskItemUseCase(repository)
+class TaskItemViewModel @Inject constructor(
+    private val upgradeTaskItemUseCase: UpgradeTaskItemUseCase,
+    private val addTaskItemUseCase: AddTaskItemUseCase,
+    private val getTaskItemUseCase: GetTaskItemUseCase
+) : ViewModel() {
 
-    private val  _startOrFinishTimeSetup = MutableLiveData<Int>()
+
+    private val _startOrFinishTimeSetup = MutableLiveData<Int>()
     val startOrFinishTimeSetup: LiveData<Int> = _startOrFinishTimeSetup
 
-    private val  _startTime = MutableLiveData<Long>()
+    private val _startTime = MutableLiveData<Long>()
     val startTime: LiveData<Long> = _startTime
-    private val  _finishTime = MutableLiveData<Long>()
+    private val _finishTime = MutableLiveData<Long>()
     val finishTime: LiveData<Long> = _finishTime
 
     private val _taskItem = MutableLiveData<TaskItem>()
@@ -90,13 +90,15 @@ class TaskItemViewModel(application: Application) : AndroidViewModel(application
         _closeTaskItemScreen.value = Unit
     }
 
-    fun setStartOrFinishTimeMode(value: Int){
+    fun setStartOrFinishTimeMode(value: Int) {
         _startOrFinishTimeSetup.value = value
     }
-    fun setStartTime(value:Long){
+
+    fun setStartTime(value: Long) {
         _startTime.value = value
     }
-    fun setFinishTime(value: Long){
+
+    fun setFinishTime(value: Long) {
         _finishTime.value = value
     }
 }

@@ -5,28 +5,43 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.todolist.R
+import com.example.todolist.ToDoListApp
 import com.example.todolist.databinding.FragmentToDoListBinding
+import com.example.todolist.presantation.ViewModelFactory
 import com.example.todolist.presantation.toDoList.customDailyCalendarViewGroup.TaskView
 import java.util.Calendar
 import java.util.Locale
+import javax.inject.Inject
 
 
 class ToDoListFragment : Fragment() {
+
+    private val component by lazy {
+        (requireActivity().application as ToDoListApp).component
+    }
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+    private val viewModel by lazy {
+        ViewModelProvider(
+            this, viewModelFactory
+        )[ToDoListViewModel::class.java]
+    }
 
     private val format = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
     private var _binding: FragmentToDoListBinding? = null
     private val binding: FragmentToDoListBinding
         get() = _binding ?: throw RuntimeException("FragmentToDoListBinding is null")
 
-    private val viewModel by lazy {
-        ViewModelProvider(
-            this,
-        )[ToDoListViewModel::class.java]
+    override fun onCreate(savedInstanceState: Bundle?) {
+        component.inject(this)
+        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(
@@ -42,7 +57,6 @@ class ToDoListFragment : Fragment() {
         _binding = null
 
     }
-
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -69,6 +83,7 @@ class ToDoListFragment : Fragment() {
 
         binding.timestampStart.text = format.format(timestampStartOFDay)
         viewModel.taskItemList.observe(viewLifecycleOwner) { taskItemList ->
+
             val countOfPlannedText =
                 "${getString(R.string.CountOfPlannedTask)} ${taskItemList.size}"
             binding.timestampEnd.text = countOfPlannedText
@@ -85,6 +100,23 @@ class ToDoListFragment : Fragment() {
                             )
                         )
                     }
+                }
+                view.setOnLongClickListener {
+                    if (it is TaskView) {
+                        val builder = AlertDialog.Builder(requireActivity())
+                        builder
+                            .setTitle("${it.taskName} ${it.taskTimeStart}")
+                            .setMessage(R.string.DeleteThisTaskQuestion)
+                            .setPositiveButton(R.string.acceptButtonText) { dialog, _ ->
+                                viewModel.deleteTaskItem(it.taskItemId)
+                                dialog.cancel()
+                                initDailyTaskItemList(calendar)
+                            }.setNegativeButton(R.string.cancelButtonText) { dialog, _ ->
+                                dialog.cancel()
+                            }
+                        builder.create().show()
+                    }
+                    true
                 }
             }
         }

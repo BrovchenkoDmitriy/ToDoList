@@ -14,4 +14,5 @@
     <string name="CountOfPlannedTask">Количество запланированных дел:</string>
     <string name="container_for_daily_calendar">Container for DailyCalendar</string>
     <string name="error_input_name">Введите название дела</string>
+    <string name="DeleteThisTaskQuestion">Удалить это дело?</string>
 </resources>

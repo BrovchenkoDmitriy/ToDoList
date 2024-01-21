@@ -2,8 +2,9 @@ package com.example.todolist.data.mappers
 
 import com.example.todolist.data.TaskItemDbModel
 import com.example.todolist.domain.TaskItem
+import javax.inject.Inject
 
-class TaskItemMapper {
+class TaskItemMapper @Inject constructor(){
     fun mapEntityToDbModel(taskItem: TaskItem): TaskItemDbModel {
         return TaskItemDbModel(
             id = taskItem.id,
