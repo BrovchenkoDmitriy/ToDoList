@@ -1,11 +1,11 @@
-package com.example.todolist.presantation.toDoList
+package com.example.todolist.presantation.toDoListFragment
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.todolist.domain.DeleteTaskItemUseCase
-import com.example.todolist.domain.GetTaskItemListUseCase
+import com.example.todolist.domain.useCases.DeleteTaskItemUseCase
+import com.example.todolist.domain.useCases.GetTaskItemListUseCase
 import com.example.todolist.domain.TaskItem
 import kotlinx.coroutines.launch
 import javax.inject.Inject

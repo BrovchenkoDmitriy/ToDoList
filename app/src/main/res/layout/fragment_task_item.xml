@@ -7,7 +7,7 @@
     android:layout_margin="16dp"
     android:elevation="8dp"
     app:cardCornerRadius="30dp"
-    tools:context=".presantation.taskItem.TaskItemFragment">
+    tools:context=".presantation.taskItemFragment.TaskItemFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
