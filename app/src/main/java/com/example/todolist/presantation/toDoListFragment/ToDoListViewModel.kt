@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.todolist.domain.TaskItem
 import com.example.todolist.domain.useCases.DeleteTaskItemUseCase
 import com.example.todolist.domain.useCases.GetTaskItemListUseCase
-import com.example.todolist.domain.TaskItem
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,8 +21,7 @@ class ToDoListViewModel @Inject constructor(
 
     fun getTaskItemList(timeStart: Long, timeFinish: Long) {
         viewModelScope.launch {
-            val a = getTaskItemListUseCase.getTaskItemList(timeStart, timeFinish)
-            _taskItemList.value = a
+            _taskItemList.value = getTaskItemListUseCase.getTaskItemList(timeStart, timeFinish)
         }
     }
 

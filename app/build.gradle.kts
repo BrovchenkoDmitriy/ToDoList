@@ -63,7 +63,17 @@ dependencies {
     implementation ("com.google.dagger:dagger:2.35.1")
     kapt ("com.google.dagger:dagger-compiler:2.35.1")
 
+
+
+
+    androidTestImplementation("com.kaspersky.android-components:kaspresso:1.5.1")
+    androidTestUtil("androidx.test:orchestrator:1.4.2")
+
     testImplementation("junit:junit:4.13.2")
+    testImplementation ("io.mockk:mockk:1.13.3")
+    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
+    testImplementation("android.arch.core:core-testing:1.1.1")
+
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 }
